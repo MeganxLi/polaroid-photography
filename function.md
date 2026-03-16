@@ -2,12 +2,58 @@
 
 這份文件將 `planning.md` 中的前端頁面需求，進一步轉化為開發實作時的「功能清單」，以便前端工程師進行模組拆解與實作。
 
-## 1. 導覽與提示功能 (Navigation & Instructional System)
-- **操作說明 Modal (Instruction Modal)**
-  - **觸發條件**：點擊右上角帶有電池/充電圖示（Battery-charging icon）的「操作說明」按鈕。
-  - **功能行為**：展開/關閉彈出視窗（Modal）或是覆蓋層（Overlay），內容顯示應用的操作步驟：拍照、選擇濾鏡、輸入文字、下載保存等指示。
-- **外部連結新開視窗 (External Link Routing)**
-  - **功能行為**：點擊右下角 GitHub (`Megna`) 連結時，使用 `target="_blank"` 另外開啟新分頁，避免使用者中斷目前的操作。
+## 1.選擇濾鏡
+當選擇濾鏡時，照片的原點會去對應點擊的按鈕顏色，並且可以選擇濾鏡旁邊可以顯示目前選到的濾鏡名稱
+
+
+1. 經典暖褐復古風 (Warm Vintage)
+
+
+這種風格帶有早期底片因為氧化而產生的經典黃褐色調，整體氛圍溫暖。
+
+
+```CSS
+.filter-warm-vintage {
+  /* sepia: 增加黃褐色調
+    contrast: 稍微加深對比
+    saturate: 讓顏色再飽滿一點點
+    brightness: 稍微調暗增加老舊感
+  */
+  filter: sepia(50%) contrast(120%) saturate(120%) brightness(90%);
+}
+```
+2. 褪色日系底片風 (Faded Film)
+
+
+這種風格模仿保存較久的拍立得，顏色已經有些流失，對比較低，亮部有一點過曝的朦朧感。
+
+```CSS
+.filter-faded-film {
+  /* sepia: 加上極淡的褐色基底
+    contrast: 降低對比，製造灰濛濛的褪色感
+    brightness: 提高亮度，模擬輕微過曝
+    grayscale: 抽掉一點鮮豔度
+  */
+  filter: sepia(20%) contrast(85%) brightness(110%) grayscale(20%);
+}
+```
+3. 濃郁 Lomo 對比風 (High Contrast Lomo)
+
+
+Lomo 相機也是拍立得常見的風格之一，特色是色彩極度濃郁、對比強烈，給人視覺衝擊較大。
+
+```CSS
+.filter-lomo {
+  /* contrast: 大幅拉高對比
+    saturate: 大幅拉高飽和度
+    brightness: 稍微壓暗
+    sepia: 增添一點復古底色
+  */
+  filter: contrast(140%) saturate(150%) brightness(85%) sepia(20%);
+}
+```
+
+4. 原圖片
 
 ## 2. 核心影像獲取功能 (Core Image Acquisition)
 使用者可以透過以下兩種主要方式獲取圖片：
@@ -38,7 +84,14 @@
 - **檔案下載 (File Download)**
   - **功能行為**：將合成後的 Canvas 轉換為 Data URL (PNG 或是 JPEG 格式)，並利用建立隱藏的 `<a>` 標籤觸發下載動作，將檔案儲存至使用者的裝置中。
 
-## 5. 其他系統與底層機制 (System Architecture)
+## 5. 導覽與提示功能 (Navigation & Instructional System)
+- **操作說明 Modal (Instruction Modal)**
+  - **觸發條件**：點擊右上角帶有電池/充電圖示（Battery-charging icon）的「操作說明」按鈕。
+  - **功能行為**：展開/關閉彈出視窗（Modal）或是覆蓋層（Overlay），內容顯示應用的操作步驟：拍照、選擇濾鏡、輸入文字、下載保存等指示。
+- **外部連結新開視窗 (External Link Routing)**
+  - **功能行為**：點擊右下角 GitHub (`Megna`) 連結時，使用 `target="_blank"` 另外開啟新分頁，避免使用者中斷目前的操作。
+
+## 6. 其他系統與底層機制 (System Architecture)
 - **純前端處理 (Client-Side Only Processing)**
   - **隱私與架構**：所有的圖片讀取、處理、編輯與合成轉換皆在瀏覽器端（前端）執行，無需伺服器 API 儲存，確保使用者隱私並減少後端負載。
 - **響應式機制 (Responsive Web Design)**
