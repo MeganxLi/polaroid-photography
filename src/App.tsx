@@ -133,8 +133,10 @@ const App: React.FC = () => {
     try {
       const dataUrl = await toPng(photoCardRef.current, {
         cacheBust: true,
-        pixelRatio: 2,
-        backgroundColor: 'transparent',
+        pixelRatio: 3, // Higher quality for the final polaroid
+        style: {
+          transform: 'none', // Prevent rotation cutting off edges in the final output
+        }
       });
 
       const link = document.createElement('a');
