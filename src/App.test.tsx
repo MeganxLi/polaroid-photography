@@ -3,11 +3,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
 import { FILTERS } from './constants';
 
-// Mock html2canvas
-vi.mock('html2canvas', () => ({
-  default: vi.fn().mockResolvedValue({
-    toDataURL: vi.fn().mockReturnValue('data:image/png;base64,fake-image-data'),
-  }),
+import { toPng } from 'html-to-image';
+
+// Mock html-to-image
+vi.mock('html-to-image', () => ({
+  toPng: vi.fn().mockResolvedValue('data:image/png;base64,fake-image-data'),
 }));
 
 // Mock URL.createObjectURL for URL testing if needed
@@ -126,7 +126,12 @@ describe('App Component Core Features', () => {
       download: '',
       href: '',
     };
-    vi.spyOn(document, 'createElement').mockReturnValue(linkMock as any);
+    const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName) => {
+      if (tagName === 'a') {
+        return linkMock as any;
+      }
+      return createElementSpy.getMockImplementation()?.(tagName) || (document as any).constructor.prototype.createElement.call(document, tagName);
+    });
     
     const downloadBtn = screen.getByTitle('下載合成相片');
     fireEvent.click(downloadBtn);
@@ -136,5 +141,28 @@ describe('App Component Core Features', () => {
       expect(linkMock.click).toHaveBeenCalled();
       expect(linkMock.download).toMatch(/^polaroidly-\d+\.png$/);
     });
+    
+    createElementSpy.mockRestore();
+  });
+
+  it('handles download failure gracefully', async () => {
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    // Override the mock to throw an error
+    (toPng as any).mockRejectedValueOnce(new Error('Canvas error'));
+    
+    render(<App />);
+    
+    const downloadBtn = screen.getByTitle('下載合成相片');
+    fireEvent.click(downloadBtn);
+
+    await waitFor(() => {
+      expect(consoleErrorMock).toHaveBeenCalled();
+      expect(alertMock).toHaveBeenCalledWith('儲存相片失敗');
+    });
+    
+    alertMock.mockRestore();
+    consoleErrorMock.mockRestore();
   });
 });

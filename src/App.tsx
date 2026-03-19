@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, BatteryCharging, Github, Star, Camera as CameraIcon, Download, Upload, Trash2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
 
 // --- Constants, Types & Components ---
 import { FILTERS, STARS_POSITIONS } from './constants';
@@ -126,21 +126,20 @@ const App: React.FC = () => {
     }
   };
 
-  // Export to Image using html2canvas
+  // Export to Image using html-to-image
   const downloadImage = async () => {
     if (!photoCardRef.current) return;
 
     try {
-      const canvas = await html2canvas(photoCardRef.current, {
-        useCORS: true,
-        scale: 2, // 提高解析度
-        backgroundColor: null,
-        logging: false
+      const dataUrl = await toPng(photoCardRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: 'transparent',
       });
 
       const link = document.createElement('a');
       link.download = `polaroidly-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error("Failed to export image:", err);
@@ -279,6 +278,7 @@ const App: React.FC = () => {
                       <img
                         src={photoImage}
                         alt="Captured"
+                        crossOrigin="anonymous"
                         className="w-full h-full object-cover transition-all duration-300"
                         style={{ filter: currentFilter.cssFilter }} // Apply CSS Filter here
                       />
