@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, BatteryCharging, Github, Star, Camera as CameraIcon, Download, Upload, Trash2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import html2canvas from 'html2canvas';
@@ -22,6 +22,13 @@ const App: React.FC = () => {
   const streamRef = useRef<MediaStream | null>(null);
 
   const currentFilter = FILTERS.find(f => f.id === selectedFilter) || FILTERS[0];
+
+  // Attach video stream to ref when camera becomes active
+  useEffect(() => {
+    if (isCameraActive && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [isCameraActive]);
 
   // Drag and Drop Handlers
   const handleDragOver = (e: React.DragEvent) => {
@@ -79,12 +86,27 @@ const App: React.FC = () => {
 
   const takePhoto = () => {
     if (videoRef.current) {
+      const video = videoRef.current;
+      
+      // Force concrete fallback dimensions if video dimensions are 0 (e.g. metadata not fully ready)
+      const width = video.videoWidth > 0 ? video.videoWidth : 640;
+      const height = video.videoHeight > 0 ? video.videoHeight : 480;
+
       const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext('2d');
+
       if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        // Handle mirroring (because we flipped the video preview)
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Reset transform
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
         const dataUrl = canvas.toDataURL('image/png');
         setPhotoImage(dataUrl);
         stopCamera();
