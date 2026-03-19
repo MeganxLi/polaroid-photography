@@ -163,12 +163,12 @@ const App: React.FC = () => {
       <main className="relative z-10 flex flex-col items-center justify-start md:justify-center pt-4 md:pt-10 px-4 h-[calc(100vh-200px)] md:h-auto overflow-y-auto md:overflow-visible no-scrollbar pb-32 md:pb-0">
         <div className="relative w-full max-w-[320px] md:max-w-none flex justify-center mt-2 md:mt-0">
           {/* Camera Illustration */}
-          <motion.div
+          <motion.div 
+            data-testid="camera-trigger"
             className="relative w-64 h-56 md:w-80 md:h-72 bg-[#FFCFD2] rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden border-b-6 md:border-b-8 border-slate-800 cursor-pointer"
             whileHover={{ scale: 1.02 }}
             onClick={handleMainAction}
-          >
-            {/* Retro Stripes */}
+          >            {/* Retro Stripes */}
             <div className="absolute left-6 md:left-10 top-0 h-full w-16 md:w-20 flex">
               <div className="w-1/4 h-full bg-[#FFB3BA]" />
               <div className="w-1/4 h-full bg-[#FFDFBA]" />
