@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, BatteryCharging, Github, Star, Camera as CameraIcon, Download, Upload, Trash2, X } from 'lucide-react';
+import { Sparkles, BatteryCharging, Github, Star, Camera as CameraIcon, Download, Upload, Trash2, X, ImagePlus, Palette, Type, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toPng } from 'html-to-image';
 
@@ -87,7 +87,7 @@ const App: React.FC = () => {
   const takePhoto = () => {
     if (videoRef.current) {
       const video = videoRef.current;
-      
+
       // Force concrete fallback dimensions if video dimensions are 0 (e.g. metadata not fully ready)
       const width = video.videoWidth > 0 ? video.videoWidth : 640;
       const height = video.videoHeight > 0 ? video.videoHeight : 480;
@@ -101,9 +101,9 @@ const App: React.FC = () => {
         // Handle mirroring (because we flipped the video preview)
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
-        
+
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
+
         // Reset transform
         ctx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -133,9 +133,9 @@ const App: React.FC = () => {
     try {
       const dataUrl = await toPng(photoCardRef.current, {
         cacheBust: true,
-        pixelRatio: 3, // Higher quality for the final polaroid
+        pixelRatio: 3,
         style: {
-          transform: 'none', // Prevent rotation cutting off edges in the final output
+          transform: 'none',
         }
       });
 
@@ -186,7 +186,7 @@ const App: React.FC = () => {
       <main className="relative z-10 flex flex-col items-center justify-start md:justify-center pt-4 md:pt-10 px-4 h-[calc(100vh-200px)] md:h-auto overflow-y-auto md:overflow-visible no-scrollbar pb-32 md:pb-0">
         <div className="relative w-full max-w-[320px] md:max-w-none flex justify-center mt-2 md:mt-0">
           {/* Camera Illustration */}
-          <motion.div 
+          <motion.div
             data-testid="camera-trigger"
             className="relative w-64 h-56 md:w-80 md:h-72 bg-[#FFCFD2] rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden border-b-6 md:border-b-8 border-slate-800 cursor-pointer"
             whileHover={{ scale: 1.02 }}
@@ -402,28 +402,36 @@ const App: React.FC = () => {
 
               <ul className="space-y-4 text-slate-600 text-sm md:text-base">
                 <li className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center flex-shrink-0 font-bold">1</span>
+                  <span className="w-6 h-6 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center flex-shrink-0">
+                    <ImagePlus size={14} />
+                  </span>
                   <div>
                     <strong className="block text-slate-800">取得相片</strong>
                     點擊中央大相機即可啟動 Webcam 進行拍照。您也可以點擊右下角 <Upload size={14} className="inline" /> 上傳，或直接將圖片拖曳至相片區塊。
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center flex-shrink-0 font-bold">2</span>
+                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center flex-shrink-0">
+                    <Palette size={14} />
+                  </span>
                   <div>
                     <strong className="block text-slate-800">套用濾鏡</strong>
                     選擇左下角的顏色圓圈，相機指示燈會連動變色，並且即時改變相片的復古濾鏡效果。
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center flex-shrink-0 font-bold">3</span>
+                  <span className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center flex-shrink-0">
+                    <Type size={14} />
+                  </span>
                   <div>
                     <strong className="block text-slate-800">自訂文字</strong>
                     點擊相片下方的文字區域 (預設為 Meow~) 即可輸入您想記錄的文字。
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-green-100 text-green-500 flex items-center justify-center flex-shrink-0 font-bold">4</span>
+                  <span className="w-6 h-6 rounded-full bg-green-100 text-green-500 flex items-center justify-center flex-shrink-0">
+                    <Save size={14} />
+                  </span>
                   <div>
                     <strong className="block text-slate-800">保存回憶</strong>
                     完成後，點擊右下角 <Download size={14} className="inline" /> 按鈕，系統會將相片（包含邊框與文字）合成並下載。
