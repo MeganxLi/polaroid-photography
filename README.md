@@ -1,6 +1,17 @@
-# Polaroidly - 拍立得相機應用
+<div align="center">
+    <h2>Polaroidly - 拍立得相機應用</h2>
+</div>
+<img width="2360" height="1640" alt="localhost_5173_(iPad Air)" src="https://github.com/user-attachments/assets/154b1374-528d-46ef-aca4-4b35de2a8b33" />
 
+
+<p align="center">
 Polaroidly 是一個充滿復古與可愛風格的單頁式 Web 應用程式 (SPA)。使用者可以透過網頁攝影機 (Webcam) 拍照，或上傳本地圖片，並為照片套用不同風格的復古濾鏡、寫下專屬的紀念文字，最後將它完美打包成一張拍立得相片下載保存。
+</p>
+<p align="center">
+  <a href="https://polaroid-photography.vercel.app/">
+    <img src="https://img.shields.io/badge/Demo_website-Your?&style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE5IDNINUMzLjg5NTQzIDMgMyAzLjg5NTQzIDMgNVYxOUMzIDIwLjEwNDYgMy44OTU0MyAyMSA1IDIxSDE5QzIwLjEwNDYgMjEgMjEgMjAuMTA0NiAyMSAxOVY1QzIxIDMuODk1NDMgMjAuMTA0NiAzIDE5IDNaIiBzdHJva2U9IiNGMkYzRjQiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0zIDlIMjEiIHN0cm9rZT0iI0YyRjNGNCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTkgMjFWOSIgc3Ryb2tlPSIjRjJGM0Y0IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff&color=282828" />
+  </a>
+</p>
 
 ---
 
@@ -48,9 +59,9 @@ Polaroidly 是一個充滿復古與可愛風格的單頁式 Web 應用程式 (SP
 3.  **精細的 UI 調整 (Pixel Perfect)**：
     *   我透過自然語言糾正細節：「相機的攝像頭要和圖片對齊」、「濾鏡圓圈底部要有一點陰影」、「星星放大 2 倍」、「手機尺寸下相機要置中」。
     *   AI 能夠理解這些視覺需求，並直接修改 Tailwind 的 ClassName 達成效果。
-4.  **解決核心技術痛點**：
-    *   **痛點一 (Webcam 空白)**：我發現點擊相機後吐出的是空圖片 (`data:,`)。AI 分析後發現是 React 狀態更新與 `<video>` 渲染時間差導致 Metadata 遺失，便主動加入 `useEffect` 綁定串流與 Fallback 尺寸保護。
-    *   **痛點二 (下載相片遺失濾鏡與圓角)**：原本使用 `html2canvas` 匯出會丟失濾鏡效果，改成 `html-to-image` 後又因為強制設白底而失去圓角。我請 AI 再次調整，最終實現了「保留圓角、自帶陰影、無背景污染」的完美 PNG 匯出。
+4.  **功能完備與深度優化**：
+    *   **修正相機擷取邏輯**：初步測試時，點擊相機偶爾會產生空圖片 (`data:,`)。經由 AI 分析，確認是 React 狀態更新與 `<video>` 渲染時間差引發的 Metadata 遺失，於是透過加入 `useEffect` 綁定串流與 Fallback 尺寸保護，確保了拍照的穩定性。
+    *   **提升相片匯出品質**：最初使用 `html2canvas` 匯出時無法保留 CSS 濾鏡，更換為 `html-to-image` 後又面臨圓角與透明背景消失的問題。在與 AI 反覆微調後，最終成功達成「保留復古濾鏡、真實圓角、自然陰影」的高清晰度 PNG 匯出。
 5.  **測試與驗證**：
     *   我要求 AI 將所有功能寫進測試。AI 主動導入了 Vitest，並完成了 8 個核心功能的單元測試（包含 Mock Webcam 與 html-to-image），確保所有功能穩健不崩潰。
 
