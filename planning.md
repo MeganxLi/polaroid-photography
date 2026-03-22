@@ -36,4 +36,4 @@
 
 # 前端操作
 請切版下方圖片的樣式
-<img src="Wireframe UI.png">，或是 polaroid.pen 的 Mockup 圖片
+<img src="./Wireframe.png">，或是 polaroid.pen 的 Mockup 圖片
