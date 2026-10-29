@@ -38,26 +38,49 @@ const App: React.FC = () => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      processFile(file);
+    if (file && (file.type.startsWith('image/') || isHeicFile(file))) {
+      void processFile(file);
     }
   };
 
-  const processFile = (file: File) => {
+  const isHeicFile = (file: File) =>
+    /\.(heic|heif)$/i.test(file.name) || /image\/(heic|heif)/i.test(file.type);
+
+  const processFile = async (file: File) => {
+    let imageFile: Blob = file;
+    if (isHeicFile(file)) {
+      try {
+        const { default: heic2any } = await import('heic2any');
+        const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
+        imageFile = Array.isArray(converted) ? converted[0] : converted;
+      } catch (error) {
+        console.error('Failed to convert HEIC image:', error);
+        alert('HEIC 圖片轉換失敗，請確認檔案完整後再試一次。');
+        return;
+      }
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
-      setPhotoImage(event.target?.result as string);
+      if (typeof event.target?.result !== 'string') {
+        alert('無法讀取這張圖片，請重新選擇檔案。');
+        return;
+      }
+      setPhotoImage(event.target.result);
       setShowPhoto(true);
       stopCamera(); // 停止相機（如果正在運行）
     };
-    reader.readAsDataURL(file);
+    reader.onerror = () => alert('讀取圖片失敗，請確認檔案格式後再試一次。');
+    reader.readAsDataURL(imageFile);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      processFile(file);
+      void processFile(file);
     }
+    // Allow selecting the same file again after replacing it.
+    e.target.value = '';
   };
 
   // WebCam Logic
@@ -252,7 +275,7 @@ const App: React.FC = () => {
             </div>
           </motion.div>
 
-          <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
+          <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*,.heic,.heif" />
 
           {/* --- Polaroid Photo Ejection --- */}
           <AnimatePresence>
